@@ -14,16 +14,17 @@ class AdflySkipper
             $ysmm = $ysmm[1];
 
             $bypassed_url = self::decode($ysmm);
-            if(filter_var($bypassed_url, FILTER_VALIDATE_URL) !== false) {
-                if(strpos($bypassed_url, 'ecleneue.com/pushredirect/') !== false) {
+            if (filter_var($bypassed_url, FILTER_VALIDATE_URL) !== false) {
+                if (strpos($bypassed_url, 'ecleneue.com/pushredirect/') !== false) {
                     $parts = parse_url($bypassed_url);
-                    if(!empty($parts['query'])) {
+                    if (!empty($parts['query'])) {
                         parse_str($parts['query'], $query);
-                        if(!empty($query['dest'])) {
+                        if (!empty($query['dest'])) {
                             return $query['dest'];
                         }
                     }
                 }
+
                 return $bypassed_url;
             }
         }
