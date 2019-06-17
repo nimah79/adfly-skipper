@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Simple class to skip adf.ly ads
+ * Simple adf.ly skipper
  * By NimaH79
  * NimaH79.ir.
  */
@@ -13,7 +13,17 @@ class AdflySkipper
         if (preg_match('/ysmm = \'(.*?)\'/', $response, $ysmm)) {
             $ysmm = $ysmm[1];
 
-            return self::decode($ysmm);
+            $bypassed_url = self::decode($ysmm);
+            if(filter_var($bypassed_url, FILTER_VALIDATE_URL) !== false) {
+                $parts = parse_url($bypassed_url);
+                if(!empty($parts['query'])) {
+                    parse_str($parts['query'], $query);
+                    if(!empty($query['dest']) && !empty($query['clickid'])) {
+                        return $query['dest'];
+                    }
+                }
+                return $bypassed_url;
+            }
         }
 
         return false;
@@ -59,6 +69,8 @@ class AdflySkipper
         $ch = curl_init($url);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
         curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         $response = curl_exec($ch);
         curl_close($ch);
 
@@ -70,3 +82,5 @@ class AdflySkipper
         return $str[$pos];
     }
 }
+
+echo AdflySkipper::bypass('http://q.gs/EtX8n');
