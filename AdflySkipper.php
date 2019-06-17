@@ -15,11 +15,13 @@ class AdflySkipper
 
             $bypassed_url = self::decode($ysmm);
             if(filter_var($bypassed_url, FILTER_VALIDATE_URL) !== false) {
-                $parts = parse_url($bypassed_url);
-                if(!empty($parts['query'])) {
-                    parse_str($parts['query'], $query);
-                    if(!empty($query['dest']) && !empty($query['clickid'])) {
-                        return $query['dest'];
+                if(strpos($bypassed_url, 'ecleneue.com/pushredirect/') !== false) {
+                    $parts = parse_url($bypassed_url);
+                    if(!empty($parts['query'])) {
+                        parse_str($parts['query'], $query);
+                        if(!empty($query['dest'])) {
+                            return $query['dest'];
+                        }
                     }
                 }
                 return $bypassed_url;
@@ -82,5 +84,3 @@ class AdflySkipper
         return $str[$pos];
     }
 }
-
-echo AdflySkipper::bypass('http://q.gs/EtX8n');
