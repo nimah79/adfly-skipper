@@ -5,6 +5,7 @@
  * By NimaH79
  * NimaH79.ir.
  */
+
 class AdflySkipper
 {
     public static function bypass($url)
@@ -12,19 +13,17 @@ class AdflySkipper
         $response = self::curl_get_contents($url);
         if (preg_match('/ysmm = \'(.*?)\'/', $response, $ysmm)) {
             $ysmm = $ysmm[1];
-
             $bypassed_url = self::decode($ysmm);
             if (filter_var($bypassed_url, FILTER_VALIDATE_URL) !== false) {
-                if (strpos($bypassed_url, 'ecleneue.com/pushredirect/') !== false) {
-                    $parts = parse_url($bypassed_url);
-                    if (!empty($parts['query'])) {
-                        parse_str($parts['query'], $query);
-                        if (!empty($query['dest'])) {
-                            return $query['dest'];
+                $parts = parse_url($bypassed_url);
+                if (!empty($parts['query'])) {
+                    parse_str($parts['query'], $query);
+                    foreach (['dest', 'dp_dest', 'dp_href'] as $url_parameter) {
+                        if (!empty($query[$url_parameter])) {
+                            return $query[$url_parameter];
                         }
                     }
                 }
-
                 return $bypassed_url;
             }
         }
@@ -38,9 +37,9 @@ class AdflySkipper
         $X = '';
         for ($m = 0; $m < strlen($ysmm); $m++) {
             if ($m % 2 == 0) {
-                $I .= self::charAt($ysmm, $m);
+                $I .= $ysmm[$m];
             } else {
-                $X = self::charAt($ysmm, $m).$X;
+                $X = $ysmm[$m] . $X;
             }
         }
         $ysmm = $I.$X;
@@ -63,7 +62,6 @@ class AdflySkipper
         $ysmm = base64_decode($ysmm);
         $ysmm = substr($ysmm, 16);
         $ysmm = substr($ysmm, 0, -16);
-
         return $ysmm;
     }
 
@@ -76,12 +74,6 @@ class AdflySkipper
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         $response = curl_exec($ch);
         curl_close($ch);
-
         return $response;
-    }
-
-    private static function charAt($str, $pos)
-    {
-        return $str[$pos];
     }
 }
