@@ -5,7 +5,6 @@
  * By NimaH79
  * NimaH79.ir.
  */
-
 class AdflySkipper
 {
     public static function bypass($url)
@@ -24,6 +23,7 @@ class AdflySkipper
                         }
                     }
                 }
+
                 return $bypassed_url;
             }
         }
@@ -39,7 +39,7 @@ class AdflySkipper
             if ($m % 2 == 0) {
                 $I .= $ysmm[$m];
             } else {
-                $X = $ysmm[$m] . $X;
+                $X = $ysmm[$m].$X;
             }
         }
         $ysmm = $I.$X;
@@ -62,6 +62,7 @@ class AdflySkipper
         $ysmm = base64_decode($ysmm);
         $ysmm = substr($ysmm, 16);
         $ysmm = substr($ysmm, 0, -16);
+
         return $ysmm;
     }
 
@@ -74,6 +75,7 @@ class AdflySkipper
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, false);
         $response = curl_exec($ch);
         curl_close($ch);
+
         return $response;
     }
 }
